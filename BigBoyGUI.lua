@@ -11,7 +11,6 @@ screenGui.Name = "BigBoyGUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = playerGui
 
--- ==================== СТАРОЕ КРАСИВОЕ МЕНЮ ====================
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 mainFrame.Size = UDim2.new(0, 620, 0, 385)
@@ -100,7 +99,7 @@ tabLayout.Padding = UDim.new(0, 6)
 tabLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 tabLayout.Parent = tabScroll
 
-local tabs = {"Aimbot", "Оружие", "Игрок", "ESP", "Цвета", "Мир", "Бинды"}
+local tabs = {"Aimbot", "Weapon", "Player", "ESP", "Colors", "World", "Binds"}
 local tabButtons = {}
 local contents = {}
 local currentTab = "Aimbot"
@@ -238,7 +237,7 @@ local function createCheckbox(parent, text, yPos, default)
     return row, box
 end
 
--- AIMBOT Tab (оставил как было)
+-- AIMBOT Tab
 local aimbotContent = Instance.new("Frame")
 aimbotContent.Size = UDim2.new(1, 0, 1, 0)
 aimbotContent.BackgroundTransparency = 1
@@ -335,7 +334,7 @@ fovLabel.TextSize = 12
 fovLabel.Font = Enum.Font.Gotham
 fovLabel.Parent = rightCol
 
--- Other Tabs (оставил как было)
+-- Other Tabs
 local function createSimpleTabWithToggles(name, toggles)
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(1, 0, 1, 0)
@@ -369,12 +368,12 @@ local function createSimpleTabWithToggles(name, toggles)
     end
 end
 
-createSimpleTabWithToggles("Оружие", {"No Recoil", "Infinite Ammo", "Fast Reload"})
-createSimpleTabWithToggles("Игрок", {"Speed Hack", "Infinite Jump", "God Mode"})
-createSimpleTabWithToggles("Цвета", {"Rainbow ESP", "Team Color"})
-createSimpleTabWithToggles("Мир", {"Full Bright", "No Fog"})
+createSimpleTabWithToggles("Weapon", {"No Recoil", "Infinite Ammo", "Fast Reload"})
+createSimpleTabWithToggles("Player", {"Speed Hack", "Infinite Jump", "God Mode"})
+createSimpleTabWithToggles("Colors", {"Rainbow ESP", "Team Color"})
+createSimpleTabWithToggles("World", {"Full Bright", "No Fog"})
 
--- ==================== ESP ВКЛАДКА С ОТДЕЛЬНЫМИ ПЕРЕКЛЮЧАТЕЛЯМИ ====================
+-- ==================== ESP TAB ====================
 local espContent = Instance.new("Frame")
 espContent.Size = UDim2.new(1, 0, 1, 0)
 espContent.BackgroundTransparency = 1
@@ -393,14 +392,13 @@ Instance.new("UIStroke", espCol).Color = Color3.fromRGB(65, 67, 78)
 local espHeader = Instance.new("TextLabel")
 espHeader.Size = UDim2.new(1, 0, 0, 30)
 espHeader.BackgroundColor3 = Color3.fromRGB(30, 32, 41)
-espHeader.Text = "ESP — Отдельные фичи"
+espHeader.Text = "ESP - Separate Features"
 espHeader.TextColor3 = Color3.fromRGB(0, 210, 255)
 espHeader.TextSize = 14
 espHeader.Font = Enum.Font.GothamSemibold
 espHeader.Parent = espCol
 Instance.new("UICorner", espHeader).CornerRadius = UDim.new(0, 10)
 
--- Функция создания красивого переключателя
 local function createNiceToggle(parent, text, yPos)
     local row = Instance.new("Frame")
     row.Size = UDim2.new(1, 0, 0, 28)
@@ -433,26 +431,23 @@ local function createNiceToggle(parent, text, yPos)
     return box
 end
 
--- Переключатели
-local boxesToggle = createNiceToggle(espCol, "Boxes (Боксы)", 32)
-local tracersToggle = createNiceToggle(espCol, "Tracers (Трейсеры)", 60)
+local boxesToggle = createNiceToggle(espCol, "Boxes", 32)
+local tracersToggle = createNiceToggle(espCol, "Tracers", 60)
 local namesToggle = createNiceToggle(espCol, "Names + Distance", 88)
-local healthToggle = createNiceToggle(espCol, "Health Bar (ХП)", 116)
-local skeletonToggle = createNiceToggle(espCol, "Skeleton (Скелет)", 144)
-local lookToggle = createNiceToggle(espCol, "Look Direction (Куда смотрит)", 172)
+local healthToggle = createNiceToggle(espCol, "Health Bar", 116)
+local skeletonToggle = createNiceToggle(espCol, "Skeleton", 144)
+local lookToggle = createNiceToggle(espCol, "Look Direction", 172)
 
--- Статус
 local status = Instance.new("TextLabel")
 status.Size = UDim2.new(1, 0, 0, 22)
 status.Position = UDim2.new(0, 0, 1, -24)
 status.BackgroundTransparency = 1
-status.Text = "ESP выключен"
+status.Text = "ESP Disabled"
 status.TextColor3 = Color3.fromRGB(255, 100, 100)
 status.TextSize = 11
 status.Font = Enum.Font.Gotham
 status.Parent = espCol
 
--- ==================== ESP СИСТЕМА ====================
 local espEnabled = false
 local espConnection = nil
 local drawings = {}
@@ -524,7 +519,6 @@ local function updateESP()
                 if hp < 0.6 then boxColor = Color3.fromRGB(255, 200, 50) end
                 if hp < 0.3 then boxColor = Color3.fromRGB(255, 80, 80) end
                 
-                -- BOXES
                 if boxesToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
                     d.box.Size = Vector2.new(size, size * 1.75)
                     d.box.Position = Vector2.new(pos.X - size/2, pos.Y - size * 0.88)
@@ -532,7 +526,6 @@ local function updateESP()
                     d.box.Visible = true
                 else d.box.Visible = false end
                 
-                -- TRACERS
                 if tracersToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
                     d.tracer.From = Vector2.new(cam.ViewportSize.X/2, cam.ViewportSize.Y)
                     d.tracer.To = Vector2.new(pos.X, pos.Y)
@@ -540,14 +533,12 @@ local function updateESP()
                     d.tracer.Visible = true
                 else d.tracer.Visible = false end
                 
-                -- NAMES
                 if namesToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
                     d.name.Text = p.Name .. " [" .. math.floor(dist) .. "m]"
                     d.name.Position = Vector2.new(pos.X, pos.Y - size * 0.92 - 15)
                     d.name.Visible = true
                 else d.name.Visible = false end
                 
-                -- HEALTH BAR
                 if healthToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
                     local barH = size * 1.5
                     d.healthBg.Size = Vector2.new(4, barH)
@@ -563,7 +554,6 @@ local function updateESP()
                     d.health.Visible = false
                 end
                 
-                -- SKELETON
                 if skeletonToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) and p.Character then
                     local head = p.Character:FindFirstChild("Head")
                     local torso = p.Character:FindFirstChild("UpperTorso") or p.Character:FindFirstChild("Torso")
@@ -574,7 +564,6 @@ local function updateESP()
                         d.skeleton[1].To = Vector2.new(t.X, t.Y)
                         d.skeleton[1].Visible = true
                         
-                        -- Остальные части скелета (упрощённо)
                         local larm = p.Character:FindFirstChild("LeftUpperArm") or p.Character:FindFirstChild("Left Arm")
                         local rarm = p.Character:FindFirstChild("RightUpperArm") or p.Character:FindFirstChild("Right Arm")
                         if larm then
@@ -594,7 +583,6 @@ local function updateESP()
                     for _, s in pairs(d.skeleton) do s.Visible = false end
                 end
                 
-                -- LOOK DIRECTION
                 if lookToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
                     local lookPos = hrp.Position + hrp.CFrame.LookVector * 7
                     local lookScreen = cam:WorldToViewportPoint(lookPos)
@@ -613,7 +601,6 @@ local function updateESP()
     end
 end
 
--- Подключаем переключатели
 local function toggle(box)
     if box.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
         box.BackgroundColor3 = Color3.fromRGB(55, 58, 70)
@@ -631,14 +618,13 @@ healthToggle.MouseButton1Click:Connect(function() toggle(healthToggle) end)
 skeletonToggle.MouseButton1Click:Connect(function() toggle(skeletonToggle) end)
 lookToggle.MouseButton1Click:Connect(function() toggle(lookToggle) end)
 
--- Главный ESP
 local espBox = createCheckbox(espCol, "Enable ESP (Master)", 200, false)
 espBox[2].MouseButton1Click:Connect(function()
     espEnabled = not espEnabled
     if espEnabled then
         espBox[2].BackgroundColor3 = Color3.fromRGB(0, 220, 120)
         espBox[2].Text = "✓"
-        status.Text = "ESP активен"
+        status.Text = "ESP Active"
         status.TextColor3 = Color3.fromRGB(100, 255, 160)
         if not espConnection then
             espConnection = RunService.RenderStepped:Connect(updateESP)
@@ -646,7 +632,7 @@ espBox[2].MouseButton1Click:Connect(function()
     else
         espBox[2].BackgroundColor3 = Color3.fromRGB(55, 58, 70)
         espBox[2].Text = ""
-        status.Text = "ESP выключен"
+        status.Text = "ESP Disabled"
         status.TextColor3 = Color3.fromRGB(255, 100, 100)
         if espConnection then espConnection:Disconnect() espConnection = nil end
         for _, d in pairs(drawings) do
@@ -659,7 +645,6 @@ espBox[2].MouseButton1Click:Connect(function()
     end
 end)
 
--- Плавающая кнопка и т.д.
 local fl = Instance.new("TextButton", screenGui)
 fl.Size = UDim2.new(0, 52, 0, 52)
 fl.Position = UDim2.new(1, -68, 1, -68)
@@ -686,4 +671,4 @@ closeBtn.MouseButton1Click:Connect(function()
     screenGui:Destroy()
 end)
 
-print("✅ BIGBOY GUI v2.1 — Красивое меню + Мощный ESP с отдельными фичами!")
+print("✅ BIGBOY GUI v2.1 loaded!")
