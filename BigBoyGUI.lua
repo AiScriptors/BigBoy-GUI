@@ -1,35 +1,17 @@
---[[
-╔════════════════════════════════════════════════════════════╗
-║                    BIGBOY GUI v1.6                         ║
-║           Powerful Roblox Mobile Executor Menu             ║
-║                                                            ║
-║  Features:                                                 ║
-║  • Strong ESP with Tracers, Boxes, Names + Distance        ║
-║  • Minimize to floating circle button (▽)                  ║
-║  • 7 beautiful tabs                                        ║
-║  • Modern UI with gradients & strokes                      ║
-║                                                            ║
-║  Compatible with Delta Mobile and most executors           ║
-╚════════════════════════════════════════════════════════════╝
-]]
-
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-if playerGui:FindFirstChild("BigBoyGUI") then
-    playerGui.BigBoyGUI:Destroy()
-end
+if playerGui:FindFirstChild("BigBoyGUI") then playerGui.BigBoyGUI:Destroy() end
 
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "BigBoyGUI"
 screenGui.ResetOnSpawn = false
-screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 
--- Main Frame
+-- ==================== СТАРОЕ КРАСИВОЕ МЕНЮ ====================
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 mainFrame.Size = UDim2.new(0, 620, 0, 385)
@@ -51,7 +33,6 @@ mainStroke.Thickness = 1.5
 mainStroke.Transparency = 0.5
 mainStroke.Parent = mainFrame
 
--- Floating Circle Button
 local floatBtn = Instance.new("TextButton")
 floatBtn.Name = "FloatButton"
 floatBtn.Size = UDim2.new(0, 56, 0, 56)
@@ -74,7 +55,6 @@ floatStroke.Thickness = 4
 floatStroke.Transparency = 0.2
 floatStroke.Parent = floatBtn
 
--- Top Bar
 local topBar = Instance.new("Frame")
 topBar.Size = UDim2.new(1, 0, 0, 46)
 topBar.BackgroundColor3 = Color3.fromRGB(20, 22, 30)
@@ -104,7 +84,6 @@ logo.Font = Enum.Font.GothamBlack
 logo.TextXAlignment = Enum.TextXAlignment.Left
 logo.Parent = topBar
 
--- Tabs
 local tabScroll = Instance.new("ScrollingFrame")
 tabScroll.Size = UDim2.new(1, -205, 1, 0)
 tabScroll.Position = UDim2.new(0, 150, 0, 0)
@@ -179,7 +158,6 @@ for _, tabName in ipairs(tabs) do
 end
 tabScroll.CanvasSize = UDim2.new(0, (#tabs * 82) + 15, 0, 0)
 
--- Buttons
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 34, 0, 34)
 closeBtn.Position = UDim2.new(1, -40, 0, 6)
@@ -202,7 +180,6 @@ minBtn.Font = Enum.Font.GothamBold
 minBtn.Parent = topBar
 Instance.new("UICorner", minBtn).CornerRadius = UDim.new(0, 8)
 
--- Content Area
 local contentArea = Instance.new("Frame")
 contentArea.Size = UDim2.new(1, -16, 1, -58)
 contentArea.Position = UDim2.new(0, 8, 0, 52)
@@ -261,7 +238,7 @@ local function createCheckbox(parent, text, yPos, default)
     return row, box
 end
 
--- AIMBOT Tab
+-- AIMBOT Tab (оставил как было)
 local aimbotContent = Instance.new("Frame")
 aimbotContent.Size = UDim2.new(1, 0, 1, 0)
 aimbotContent.BackgroundTransparency = 1
@@ -358,7 +335,7 @@ fovLabel.TextSize = 12
 fovLabel.Font = Enum.Font.Gotham
 fovLabel.Parent = rightCol
 
--- Other Tabs
+-- Other Tabs (оставил как было)
 local function createSimpleTabWithToggles(name, toggles)
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(1, 0, 1, 0)
@@ -397,7 +374,7 @@ createSimpleTabWithToggles("Игрок", {"Speed Hack", "Infinite Jump", "God Mo
 createSimpleTabWithToggles("Цвета", {"Rainbow ESP", "Team Color"})
 createSimpleTabWithToggles("Мир", {"Full Bright", "No Fog"})
 
--- ESP Tab with Real Functionality
+-- ==================== ESP ВКЛАДКА С ОТДЕЛЬНЫМИ ПЕРЕКЛЮЧАТЕЛЯМИ ====================
 local espContent = Instance.new("Frame")
 espContent.Size = UDim2.new(1, 0, 1, 0)
 espContent.BackgroundTransparency = 1
@@ -416,174 +393,297 @@ Instance.new("UIStroke", espCol).Color = Color3.fromRGB(65, 67, 78)
 local espHeader = Instance.new("TextLabel")
 espHeader.Size = UDim2.new(1, 0, 0, 30)
 espHeader.BackgroundColor3 = Color3.fromRGB(30, 32, 41)
-espHeader.Text = "ESP"
-espHeader.TextColor3 = Color3.fromRGB(205, 205, 215)
+espHeader.Text = "ESP — Отдельные фичи"
+espHeader.TextColor3 = Color3.fromRGB(0, 210, 255)
 espHeader.TextSize = 14
 espHeader.Font = Enum.Font.GothamSemibold
 espHeader.Parent = espCol
 Instance.new("UICorner", espHeader).CornerRadius = UDim.new(0, 10)
 
--- REAL ESP SYSTEM
+-- Функция создания красивого переключателя
+local function createNiceToggle(parent, text, yPos)
+    local row = Instance.new("Frame")
+    row.Size = UDim2.new(1, 0, 0, 28)
+    row.Position = UDim2.new(0, 0, 0, yPos)
+    row.BackgroundTransparency = 1
+    row.Parent = parent
+    
+    local box = Instance.new("TextButton")
+    box.Size = UDim2.new(0, 18, 0, 18)
+    box.Position = UDim2.new(0, 10, 0, 5)
+    box.BackgroundColor3 = Color3.fromRGB(55, 58, 70)
+    box.Text = ""
+    box.TextColor3 = Color3.new(1,1,1)
+    box.TextSize = 13
+    box.Font = Enum.Font.GothamBold
+    box.Parent = row
+    Instance.new("UICorner", box).CornerRadius = UDim.new(0, 4)
+    
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -35, 1, 0)
+    label.Position = UDim2.new(0, 35, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(230, 230, 240)
+    label.TextSize = 12
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = row
+    
+    return box
+end
+
+-- Переключатели
+local boxesToggle = createNiceToggle(espCol, "Boxes (Боксы)", 32)
+local tracersToggle = createNiceToggle(espCol, "Tracers (Трейсеры)", 60)
+local namesToggle = createNiceToggle(espCol, "Names + Distance", 88)
+local healthToggle = createNiceToggle(espCol, "Health Bar (ХП)", 116)
+local skeletonToggle = createNiceToggle(espCol, "Skeleton (Скелет)", 144)
+local lookToggle = createNiceToggle(espCol, "Look Direction (Куда смотрит)", 172)
+
+-- Статус
+local status = Instance.new("TextLabel")
+status.Size = UDim2.new(1, 0, 0, 22)
+status.Position = UDim2.new(0, 0, 1, -24)
+status.BackgroundTransparency = 1
+status.Text = "ESP выключен"
+status.TextColor3 = Color3.fromRGB(255, 100, 100)
+status.TextSize = 11
+status.Font = Enum.Font.Gotham
+status.Parent = espCol
+
+-- ==================== ESP СИСТЕМА ====================
 local espEnabled = false
 local espConnection = nil
-local espDrawings = {}
+local drawings = {}
 
 local function createESP(p)
-    if p == player or espDrawings[p] then return end
-    local drawings = {}
-    drawings.box = Drawing.new("Square")
-    drawings.box.Thickness = 1.8
-    drawings.box.Filled = false
-    drawings.box.Color = Color3.fromRGB(0, 255, 120)
+    if p == player or drawings[p] then return end
+    local d = {}
+    d.box = Drawing.new("Square")
+    d.box.Thickness = 2
+    d.box.Filled = false
     
-    drawings.tracer = Drawing.new("Line")
-    drawings.tracer.Thickness = 1.8
-    drawings.tracer.Color = Color3.fromRGB(255, 220, 0)
+    d.tracer = Drawing.new("Line")
+    d.tracer.Thickness = 1.8
     
-    drawings.name = Drawing.new("Text")
-    drawings.name.Size = 14
-    drawings.name.Center = true
-    drawings.name.Outline = true
-    drawings.name.Color = Color3.fromRGB(255, 255, 255)
+    d.name = Drawing.new("Text")
+    d.name.Size = 13
+    d.name.Center = true
+    d.name.Outline = true
     
-    espDrawings[p] = drawings
+    d.healthBg = Drawing.new("Square")
+    d.healthBg.Thickness = 0
+    d.healthBg.Filled = true
+    d.healthBg.Color = Color3.fromRGB(40, 40, 40)
+    
+    d.health = Drawing.new("Square")
+    d.health.Thickness = 0
+    d.health.Filled = true
+    
+    d.skeleton = {}
+    for i = 1, 6 do
+        d.skeleton[i] = Drawing.new("Line")
+        d.skeleton[i].Thickness = 1.6
+    end
+    
+    d.look = Drawing.new("Line")
+    d.look.Thickness = 2.2
+    d.look.Color = Color3.fromRGB(100, 200, 255)
+    
+    drawings[p] = d
 end
 
 local function removeESP(p)
-    if not espDrawings[p] then return end
-    for _, d in pairs(espDrawings[p]) do d:Remove() end
-    espDrawings[p] = nil
+    if not drawings[p] then return end
+    for _, v in pairs(drawings[p]) do
+        if type(v) == "table" then
+            for _, s in pairs(v) do s:Remove() end
+        else
+            v:Remove()
+        end
+    end
+    drawings[p] = nil
 end
 
 local function updateESP()
     if not espEnabled then return end
-    local camera = workspace.CurrentCamera
-    local viewport = camera.ViewportSize
-    for p, drawings in pairs(espDrawings) do
+    local cam = workspace.CurrentCamera
+    
+    for p, d in pairs(drawings) do
         if p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
             local hrp = p.Character.HumanoidRootPart
-            local pos, onScreen = camera:WorldToViewportPoint(hrp.Position)
-            local distance = (camera.CFrame.Position - hrp.Position).Magnitude
-            if onScreen and distance < 1500 then
-                local size = math.clamp(2800 / distance, 45, 130)
-                drawings.box.Size = Vector2.new(size, size * 1.85)
-                drawings.box.Position = Vector2.new(pos.X - size/2, pos.Y - size * 0.92)
-                drawings.box.Visible = true
-                drawings.tracer.From = Vector2.new(viewport.X / 2, viewport.Y)
-                drawings.tracer.To = Vector2.new(pos.X, pos.Y)
-                drawings.tracer.Visible = true
-                drawings.name.Text = p.Name .. " [" .. math.floor(distance) .. "m]"
-                drawings.name.Position = Vector2.new(pos.X, pos.Y - size * 0.92 - 18)
-                drawings.name.Visible = true
+            local hum = p.Character:FindFirstChild("Humanoid")
+            local pos, visible = cam:WorldToViewportPoint(hrp.Position)
+            local dist = (cam.CFrame.Position - hrp.Position).Magnitude
+            
+            if visible and dist < 1400 then
+                local size = math.clamp(2700 / dist, 44, 115)
+                local hp = hum and math.clamp(hum.Health / hum.MaxHealth, 0, 1) or 1
+                local boxColor = Color3.fromRGB(0, 255, 120)
+                if hp < 0.6 then boxColor = Color3.fromRGB(255, 200, 50) end
+                if hp < 0.3 then boxColor = Color3.fromRGB(255, 80, 80) end
+                
+                -- BOXES
+                if boxesToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
+                    d.box.Size = Vector2.new(size, size * 1.75)
+                    d.box.Position = Vector2.new(pos.X - size/2, pos.Y - size * 0.88)
+                    d.box.Color = boxColor
+                    d.box.Visible = true
+                else d.box.Visible = false end
+                
+                -- TRACERS
+                if tracersToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
+                    d.tracer.From = Vector2.new(cam.ViewportSize.X/2, cam.ViewportSize.Y)
+                    d.tracer.To = Vector2.new(pos.X, pos.Y)
+                    d.tracer.Color = boxColor
+                    d.tracer.Visible = true
+                else d.tracer.Visible = false end
+                
+                -- NAMES
+                if namesToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
+                    d.name.Text = p.Name .. " [" .. math.floor(dist) .. "m]"
+                    d.name.Position = Vector2.new(pos.X, pos.Y - size * 0.92 - 15)
+                    d.name.Visible = true
+                else d.name.Visible = false end
+                
+                -- HEALTH BAR
+                if healthToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
+                    local barH = size * 1.5
+                    d.healthBg.Size = Vector2.new(4, barH)
+                    d.healthBg.Position = Vector2.new(pos.X + size/2 + 7, pos.Y - size * 0.75)
+                    d.healthBg.Visible = true
+                    
+                    d.health.Size = Vector2.new(4, barH * hp)
+                    d.health.Position = Vector2.new(pos.X + size/2 + 7, pos.Y - size * 0.75 + barH * (1 - hp))
+                    d.health.Color = Color3.fromRGB(255 * (1 - hp), 255 * hp, 40)
+                    d.health.Visible = true
+                else
+                    d.healthBg.Visible = false
+                    d.health.Visible = false
+                end
+                
+                -- SKELETON
+                if skeletonToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) and p.Character then
+                    local head = p.Character:FindFirstChild("Head")
+                    local torso = p.Character:FindFirstChild("UpperTorso") or p.Character:FindFirstChild("Torso")
+                    if head and torso then
+                        local h = cam:WorldToViewportPoint(head.Position)
+                        local t = cam:WorldToViewportPoint(torso.Position)
+                        d.skeleton[1].From = Vector2.new(h.X, h.Y)
+                        d.skeleton[1].To = Vector2.new(t.X, t.Y)
+                        d.skeleton[1].Visible = true
+                        
+                        -- Остальные части скелета (упрощённо)
+                        local larm = p.Character:FindFirstChild("LeftUpperArm") or p.Character:FindFirstChild("Left Arm")
+                        local rarm = p.Character:FindFirstChild("RightUpperArm") or p.Character:FindFirstChild("Right Arm")
+                        if larm then
+                            local la = cam:WorldToViewportPoint(larm.Position)
+                            d.skeleton[2].From = Vector2.new(t.X, t.Y)
+                            d.skeleton[2].To = Vector2.new(la.X, la.Y)
+                            d.skeleton[2].Visible = true
+                        end
+                        if rarm then
+                            local ra = cam:WorldToViewportPoint(rarm.Position)
+                            d.skeleton[3].From = Vector2.new(t.X, t.Y)
+                            d.skeleton[3].To = Vector2.new(ra.X, ra.Y)
+                            d.skeleton[3].Visible = true
+                        end
+                    end
+                else
+                    for _, s in pairs(d.skeleton) do s.Visible = false end
+                end
+                
+                -- LOOK DIRECTION
+                if lookToggle.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
+                    local lookPos = hrp.Position + hrp.CFrame.LookVector * 7
+                    local lookScreen = cam:WorldToViewportPoint(lookPos)
+                    d.look.From = Vector2.new(pos.X, pos.Y)
+                    d.look.To = Vector2.new(lookScreen.X, lookScreen.Y)
+                    d.look.Visible = true
+                else d.look.Visible = false end
+                
             else
-                drawings.box.Visible = false
-                drawings.tracer.Visible = false
-                drawings.name.Visible = false
+                for _, v in pairs(d) do
+                    if type(v) == "table" then for _, s in pairs(v) do s.Visible = false end
+                    else v.Visible = false end
+                end
             end
-        else
-            drawings.box.Visible = false
-            drawings.tracer.Visible = false
-            drawings.name.Visible = false
         end
     end
 end
 
-local espRow, espBox = createCheckbox(espCol, "Enable ESP (Tracers + Boxes + Names)", 38, false)
+-- Подключаем переключатели
+local function toggle(box)
+    if box.BackgroundColor3 == Color3.fromRGB(0, 220, 120) then
+        box.BackgroundColor3 = Color3.fromRGB(55, 58, 70)
+        box.Text = ""
+    else
+        box.BackgroundColor3 = Color3.fromRGB(0, 220, 120)
+        box.Text = "✓"
+    end
+end
 
-espBox.MouseButton1Click:Connect(function()
+boxesToggle.MouseButton1Click:Connect(function() toggle(boxesToggle) end)
+tracersToggle.MouseButton1Click:Connect(function() toggle(tracersToggle) end)
+namesToggle.MouseButton1Click:Connect(function() toggle(namesToggle) end)
+healthToggle.MouseButton1Click:Connect(function() toggle(healthToggle) end)
+skeletonToggle.MouseButton1Click:Connect(function() toggle(skeletonToggle) end)
+lookToggle.MouseButton1Click:Connect(function() toggle(lookToggle) end)
+
+-- Главный ESP
+local espBox = createCheckbox(espCol, "Enable ESP (Master)", 200, false)
+espBox[2].MouseButton1Click:Connect(function()
     espEnabled = not espEnabled
     if espEnabled then
-        espBox.BackgroundColor3 = Color3.fromRGB(0, 220, 120)
-        espBox.Text = "✓"
-        for _, p in pairs(Players:GetPlayers()) do createESP(p) end
+        espBox[2].BackgroundColor3 = Color3.fromRGB(0, 220, 120)
+        espBox[2].Text = "✓"
+        status.Text = "ESP активен"
+        status.TextColor3 = Color3.fromRGB(100, 255, 160)
         if not espConnection then
             espConnection = RunService.RenderStepped:Connect(updateESP)
         end
-        print("[BIGBOY] ESP ENABLED - Tracers + Boxes + Names active")
     else
-        espBox.BackgroundColor3 = Color3.fromRGB(55, 58, 70)
-        espBox.Text = ""
+        espBox[2].BackgroundColor3 = Color3.fromRGB(55, 58, 70)
+        espBox[2].Text = ""
+        status.Text = "ESP выключен"
+        status.TextColor3 = Color3.fromRGB(255, 100, 100)
         if espConnection then espConnection:Disconnect() espConnection = nil end
-        for _, drawings in pairs(espDrawings) do for _, d in pairs(drawings) do d:Remove() end end
-        espDrawings = {}
-        print("[BIGBOY] ESP DISABLED")
+        for _, d in pairs(drawings) do
+            for _, v in pairs(d) do
+                if type(v) == "table" then for _, s in pairs(v) do s:Remove() end
+                else v:Remove() end
+            end
+        end
+        drawings = {}
     end
 end)
 
-Players.PlayerAdded:Connect(function(p)
-    if espEnabled then createESP(p) end
-end)
-Players.PlayerRemoving:Connect(removeESP)
+-- Плавающая кнопка и т.д.
+local fl = Instance.new("TextButton", screenGui)
+fl.Size = UDim2.new(0, 52, 0, 52)
+fl.Position = UDim2.new(1, -68, 1, -68)
+fl.BackgroundColor3 = Color3.fromRGB(0, 200, 255)
+fl.Text = "BB"
+fl.TextColor3 = Color3.new(1,1,1)
+fl.TextSize = 22
+fl.Font = Enum.Font.GothamBlack
+fl.Visible = false
+Instance.new("UICorner", fl).CornerRadius = UDim.new(1, 0)
 
--- Binds Tab
-local bindsContent = Instance.new("Frame")
-bindsContent.Size = UDim2.new(1, 0, 1, 0)
-bindsContent.BackgroundTransparency = 1
-bindsContent.Visible = false
-bindsContent.Parent = contentArea
-contents["Бинды"] = bindsContent
-
-local bindsCol = Instance.new("Frame")
-bindsCol.Size = UDim2.new(0.95, 0, 0.9, 0)
-bindsCol.Position = UDim2.new(0.025, 0, 0.05, 0)
-bindsCol.BackgroundColor3 = Color3.fromRGB(40, 42, 52)
-bindsCol.Parent = bindsContent
-Instance.new("UICorner", bindsCol).CornerRadius = UDim.new(0, 10)
-Instance.new("UIStroke", bindsCol).Color = Color3.fromRGB(65, 67, 78)
-
-local bindsHeader = Instance.new("TextLabel")
-bindsHeader.Size = UDim2.new(1, 0, 0, 30)
-bindsHeader.BackgroundColor3 = Color3.fromRGB(30, 32, 41)
-bindsHeader.Text = "Бинды"
-bindsHeader.TextColor3 = Color3.fromRGB(205, 205, 215)
-bindsHeader.TextSize = 14
-bindsHeader.Font = Enum.Font.GothamSemibold
-bindsHeader.Parent = bindsCol
-Instance.new("UICorner", bindsHeader).CornerRadius = UDim.new(0, 10)
-
-local bindsList = {"Aimbot — Mouse1", "Speed — F", "Jump — Space", "ESP — Insert", "God — G"}
-for i, b in ipairs(bindsList) do
-    local lbl = Instance.new("TextLabel")
-    lbl.Size = UDim2.new(1, -20, 0, 24)
-    lbl.Position = UDim2.new(0, 12, 0, 36 + (i-1)*26)
-    lbl.BackgroundTransparency = 1
-    lbl.Text = b
-    lbl.TextColor3 = Color3.fromRGB(200, 200, 210)
-    lbl.TextSize = 12.5
-    lbl.Font = Enum.Font.Gotham
-    lbl.Parent = bindsCol
-end
-
--- Version
-local version = Instance.new("TextLabel")
-version.Size = UDim2.new(1, 0, 0, 18)
-version.Position = UDim2.new(0, 0, 1, -20)
-version.BackgroundTransparency = 1
-version.Text = "BIGBOY GUI v1.6 | Mobile Edition + Strong ESP"
-version.TextColor3 = Color3.fromRGB(115, 115, 125)
-version.TextSize = 10
-version.Font = Enum.Font.Gotham
-version.Parent = mainFrame
-
--- Button Connections
-closeBtn.MouseButton1Click:Connect(function()
-    print("[BIGBOY] Menu closed")
-    screenGui:Destroy()
+fl.MouseButton1Click:Connect(function()
+    mainFrame.Visible = true
+    fl.Visible = false
 end)
 
 minBtn.MouseButton1Click:Connect(function()
-    print("[BIGBOY] Minimized to circle")
     mainFrame.Visible = false
-    floatBtn.Visible = true
+    fl.Visible = true
 end)
 
-floatBtn.MouseButton1Click:Connect(function()
-    print("[BIGBOY] Circle clicked - menu opened")
-    mainFrame.Visible = true
-    floatBtn.Visible = false
+closeBtn.MouseButton1Click:Connect(function()
+    if espConnection then espConnection:Disconnect() end
+    screenGui:Destroy()
 end)
 
-print("✅ BIGBOY GUI v1.6 loaded successfully!")
-print("• Press ▽ to minimize to floating circle")
-print("• Enable ESP in the ESP tab for tracers + boxes + names")
-```
+print("✅ BIGBOY GUI v2.1 — Красивое меню + Мощный ESP с отдельными фичами!")
